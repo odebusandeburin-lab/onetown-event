@@ -7,14 +7,18 @@
 <script>
   // ===== イベント設定（ここを書き換えれば内容を変更できます） =====
   const CONFIG = {
-    password: "s16malove",
-    memoTitle: "【管理者（えんどぅ）より緊急メモ】",
-    memoText: "ハッカー対策のため、この端末のログインパスワードは端末内には保存していない！パスワードは俺の馴染みがある『Stab City（スタブシティ）』のどこかに手書きメモで隠しておいた。現地でメモを探して入力しろ！",
+    password: "96magyao",
+    memoTitle: "【えんどぅの置手紙】",
+    memoText: "ハッカーにシステムを乗っ取られた！奴らに奪われないよう、Yellow Jack Innのボアちゃんの水槽の中にメモを隠しておいた。パスワードを確認して、このPCのロックを解除してくれ！",
     errorText: "ACCESS DENIED - パスワードが違います",
-    successTitle: "【システム復旧完了】",
+    successTitle: "✔ 認証成功：緊急バックアップログ",
+    // 「」で囲むと太字、**「」** で囲むと赤字。"" は空行。
     successLines: [
-      "物理キー（USB）所持者：OneTown市民病院（EMS本部）の院長",
-      "合言葉：えんどぅに頼まれて緊急アクセスキーを取りに来た"
+      "システムの一部復旧に成功しました。",
+      "現在、メインの車両・金庫データが入った**「バックアップUSB」**は外部へ持ち出されています。",
+      "",
+      "【次の行動指示】",
+      "緊急アクセスキーの保管場所を知る「EMS病院の院長」のもとへ急ぎ、USBの在処を聞き出せ！"
     ]
   };
 </script>
@@ -148,6 +152,10 @@
     text-shadow: 0 0 5px rgba(255,224,102,.35); user-select: text;
   }
   .success-box b { font-size: 16px; display: block; margin-bottom: 4px; }
+  .success-box strong { color: #fff3c4; }
+  .success-box strong.red { color: #ff6b8a; text-shadow: 0 0 5px rgba(255,107,138,.4); }
+  .success-box .gap { height: 14px; }
+  .success-box .head { font-weight: 700; color: #ffcf5c; }
 
   /* ---------- スマホ・狭い画面 ---------- */
   @media (max-width: 720px) {
@@ -249,7 +257,23 @@
   box.appendChild(title);
   CONFIG.successLines.forEach(line => {
     const d = document.createElement("div");
-    d.textContent = line;
+    if (line === "") d.className = "gap";
+    if (line.startsWith("【")) d.className = "head";
+    line.split(/(\*\*[^*]+\*\*|「[^」]*」)/).forEach(part => {
+      if (!part) return;
+      if (part.startsWith("**")) {
+        const s = document.createElement("strong");
+        s.className = "red";
+        s.textContent = part.slice(2, -2);
+        d.appendChild(s);
+      } else if (part.startsWith("「")) {
+        const s = document.createElement("strong");
+        s.textContent = part;
+        d.appendChild(s);
+      } else {
+        d.appendChild(document.createTextNode(part));
+      }
+    });
     box.appendChild(d);
   });
 
